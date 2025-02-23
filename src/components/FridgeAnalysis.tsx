@@ -95,13 +95,25 @@ export function FridgeAnalysis({
           </Card>
         </div>
 
-        <Button
-          onClick={searchRecipes}
-          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
-        >
-          <Utensils className="mr-2 h-4 w-4" />
-          Find Recipes with These Ingredients
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button
+            onClick={searchRecipes}
+            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg transition-all duration-300 hover:from-emerald-600 hover:to-teal-600 hover:shadow-emerald-500/25"
+          >
+            <Utensils className="mr-2 h-4 w-4" />
+            Lookup recipes online
+          </Button>
+
+          <div className="space-y-1">
+            <Button
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white opacity-50 shadow-lg"
+              disabled
+            >
+              Build recipe with AI
+            </Button>
+            <p className="text-center text-xs text-zinc-500">Coming Soon!</p>
+          </div>
+        </div>
       </div>
     </div>
   );
