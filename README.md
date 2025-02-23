@@ -92,10 +92,10 @@ Current:
 ## 🗺 Roadmap
 
 - [ ] Add bounding box canvas to show the detected food items
+- [ ] Integrate with APIs to get accurate price and nutrition information
 - [ ] AI-powered recipe generation based on available ingredients
 - [ ] Smart expiration date tracking
 - [ ] Multi-image analysis support
-- [ ] Meal planning assistant
 - [ ] Social sharing features
 - [ ] Dietary restrictions and allergen alerts
 
