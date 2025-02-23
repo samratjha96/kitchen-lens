@@ -121,7 +121,9 @@ export const ImageUploader = forwardRef<HTMLImageElement, ImageUploaderProps>(
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => document.getElementById("image-upload")?.click()}
+                  onClick={() =>
+                    document.getElementById("image-upload")?.click()
+                  }
                 >
                   Change Image
                 </Button>
@@ -157,7 +159,7 @@ export const ImageUploader = forwardRef<HTMLImageElement, ImageUploaderProps>(
         </div>
       </Card>
     );
-  }
+  },
 );
 
-ImageUploader.displayName = 'ImageUploader';
+ImageUploader.displayName = "ImageUploader";

@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { StarIcon, BoltIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { ImageUploader } from "@/components/ImageUploader";
 import { FridgeAnalysis } from "@/components/FridgeAnalysis";
@@ -23,38 +23,41 @@ export default function HomePage() {
     }
   }, []);
 
-  useEffect(() => {
-    const updateImageHeight = () => {
-      if (imageRef.current) {
-        const height = imageRef.current.clientHeight;
-        setImageHeight(height > 0 ? height : 500);
-      }
-    };
+  const updateImageHeight = useCallback(() => {
+    if (imageRef.current) {
+      const height = imageRef.current.clientHeight;
+      setImageHeight(height > 0 ? height : 500);
+    }
+  }, []);
 
+  useEffect(() => {
     updateImageHeight();
     window.addEventListener("resize", updateImageHeight);
     return () => window.removeEventListener("resize", updateImageHeight);
-  }, []);
+  }, [updateImageHeight]);
 
-  const handleUpdateQuantity = (index: number, quantity: number) => {
-    const updatedAnalysis = storageService.updateItem(index, quantity);
-    if (updatedAnalysis) {
-      setAnalysis(updatedAnalysis);
-    }
-  };
-
-  const scrollToAnalysis = () => {
-    analysisRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleAnalysisStart = () => {
-    setIsAnalyzing(true);
-  };
-
-  const handleAnalysisComplete = (result: FridgeAnalysisType) => {
+  const handleAnalysisComplete = useCallback((result: FridgeAnalysisType) => {
     storageService.saveAnalysis(result);
     setAnalysis(result);
     setIsAnalyzing(false);
+  }, []);
+
+  const handleAnalysisStart = useCallback(() => {
+    setIsAnalyzing(true);
+  }, []);
+
+  const handleUpdateQuantity = useCallback(
+    (index: number, quantity: number) => {
+      const updatedAnalysis = storageService.updateItem(index, quantity);
+      if (updatedAnalysis) {
+        setAnalysis(updatedAnalysis);
+      }
+    },
+    [],
+  );
+
+  const scrollToAnalysis = () => {
+    analysisRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -183,4 +186,4 @@ const features = [
       "Receive personalized meal recommendations based on your available ingredients.",
     icon: SparklesIcon,
   },
-];
+] as const;
