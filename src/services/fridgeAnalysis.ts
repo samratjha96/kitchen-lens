@@ -2,8 +2,8 @@ import type { FridgeAnalysis } from "@/types/fridge";
 
 export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1500))
-  
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
   return {
     items: [
       {
@@ -18,7 +18,7 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
         },
         estimatedValue: 3.99,
         expiryDate: "2024-04-01",
-        category: "dairy"
+        category: "dairy",
       },
       {
         name: "Eggs",
@@ -32,7 +32,7 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
         },
         estimatedValue: 4.99,
         expiryDate: "2024-03-28",
-        category: "dairy"
+        category: "dairy",
       },
       {
         name: "Salmon Fillet",
@@ -46,7 +46,7 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
         },
         estimatedValue: 12.99,
         expiryDate: "2024-03-25",
-        category: "seafood"
+        category: "seafood",
       },
       {
         name: "Organic Apples",
@@ -60,10 +60,10 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
         },
         estimatedValue: 5.99,
         expiryDate: "2024-03-30",
-        category: "produce"
-      }
+        category: "produce",
+      },
     ],
     totalCalories: 1524,
-    totalValue: 27.96
-  }
-} 
+    totalValue: 27.96,
+  };
+};

@@ -28,23 +28,23 @@ export const storageService = {
     const newItems = [...analysis.items];
     const item = newItems[index];
     if (!item) return analysis;
-    
+
     newItems[index] = { ...item, quantity };
-    
+
     const totalCalories = newItems.reduce(
       (sum, item) => sum + item.nutrition.calories * item.quantity,
-      0
+      0,
     );
     const totalValue = newItems.reduce(
       (sum, item) => sum + item.estimatedValue * item.quantity,
-      0
+      0,
     );
 
     const updatedAnalysis: FridgeAnalysis = {
       ...analysis,
       items: newItems,
       totalCalories,
-      totalValue
+      totalValue,
     };
 
     storageService.saveAnalysis(updatedAnalysis);
@@ -53,5 +53,5 @@ export const storageService = {
 
   clearAnalysis: () => {
     localStorage.removeItem(STORAGE_KEY);
-  }
-}; 
+  },
+};
