@@ -1,6 +1,11 @@
 import { env } from "@/env";
 import type { z } from "zod";
-import type { LLMConfig, LLMResponse, ModelInterface, PromptContent } from "./types";
+import type {
+  LLMConfig,
+  LLMResponse,
+  ModelInterface,
+  PromptContent,
+} from "./types";
 import { GeminiModel } from "./providers/gemini";
 
 export class LLM<T extends z.ZodSchema> {

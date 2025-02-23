@@ -12,6 +12,8 @@ export default function HomePage() {
   const analysisRef = useRef<HTMLDivElement>(null);
   const [analysis, setAnalysis] = useState<FridgeAnalysisType>();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [imageHeight, setImageHeight] = useState<number>(0);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     storageService.clearAnalysis();
@@ -19,6 +21,19 @@ export default function HomePage() {
     if (storedAnalysis) {
       setAnalysis(storedAnalysis);
     }
+  }, []);
+
+  useEffect(() => {
+    const updateImageHeight = () => {
+      if (imageRef.current) {
+        const height = imageRef.current.clientHeight;
+        setImageHeight(height > 0 ? height : 500);
+      }
+    };
+
+    updateImageHeight();
+    window.addEventListener("resize", updateImageHeight);
+    return () => window.removeEventListener("resize", updateImageHeight);
   }, []);
 
   const handleUpdateQuantity = (index: number, quantity: number) => {
@@ -119,6 +134,7 @@ export default function HomePage() {
             <div className="flex justify-center">
               <div className="w-full max-w-xl">
                 <ImageUploader
+                  ref={imageRef}
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
@@ -128,14 +144,16 @@ export default function HomePage() {
             <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
               <div className="lg:sticky lg:top-4">
                 <ImageUploader
+                  ref={imageRef}
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
               </div>
-              <div>
+              <div className="h-full">
                 <FridgeAnalysis
                   analysis={analysis}
                   onUpdateQuantity={handleUpdateQuantity}
+                  imageHeight={imageHeight || 500}
                 />
               </div>
             </div>

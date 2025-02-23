@@ -1,7 +1,11 @@
 import type { z } from "zod";
 
 export type ModelProvider = "gemini" | "openai" | "anthropic";
-export type ModelName = "gemini-1.5-pro-latest" | "gemini-pro" | "gpt-4" | "claude-3";
+export type ModelName =
+  | "gemini-1.5-pro-latest"
+  | "gemini-pro"
+  | "gpt-4"
+  | "claude-3";
 
 export interface LLMConfig<T extends z.ZodSchema> {
   provider: ModelProvider;
@@ -15,8 +19,10 @@ export interface LLMResponse<T> {
   raw: string;
 }
 
-export type PromptContent = string | Array<string | { inlineData: { data: string; mimeType: string } }>;
+export type PromptContent =
+  | string
+  | Array<string | { inlineData: { data: string; mimeType: string } }>;
 
 export interface ModelInterface<T> {
   generate(prompt: PromptContent): Promise<LLMResponse<T>>;
-} 
+}

@@ -1,14 +1,19 @@
 import type { FridgeAnalysis as FridgeAnalysisType } from "@/types/fridge";
 import { AnalysisCard } from "@/components/AnalysisCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Utensils } from "lucide-react";
 
 type FridgeAnalysisProps = {
   analysis?: FridgeAnalysisType;
   onUpdateQuantity?: (index: number, quantity: number) => void;
+  imageHeight?: number;
 };
 
 export function FridgeAnalysis({
   analysis,
   onUpdateQuantity,
+  imageHeight = 500,
 }: FridgeAnalysisProps) {
   if (!analysis) {
     return (
@@ -17,6 +22,17 @@ export function FridgeAnalysis({
         <div className="h-16 rounded-lg bg-zinc-800" />
         <div className="h-16 rounded-lg bg-zinc-800" />
         <div className="h-16 rounded-lg bg-zinc-800" />
+      </div>
+    );
+  }
+
+  if (analysis.items.length === 0) {
+    return (
+      <div className="rounded-lg bg-zinc-800 p-6 text-center">
+        <p className="text-zinc-200">
+          No food items were found in the picture. Please upload a different
+          picture.
+        </p>
       </div>
     );
   }
@@ -34,5 +50,59 @@ export function FridgeAnalysis({
     category: item.category ?? "other",
   }));
 
-  return <AnalysisCard items={items} onUpdateQuantity={onUpdateQuantity} />;
+  const totalCalories = items.reduce(
+    (sum, item) => sum + item.nutrition.calories * item.quantity,
+    0,
+  );
+  const totalValue = items.reduce(
+    (sum, item) => sum + item.estimatedPrice * item.quantity,
+    0,
+  );
+
+  const searchRecipes = () => {
+    const ingredients = items.map((item) => item.name).join(", ");
+    window.open(
+      `https://www.google.com/search?q=recipes+with+${encodeURIComponent(ingredients)}`,
+      "_blank",
+    );
+  };
+
+  return (
+    <div className="flex h-full flex-col" style={{ height: imageHeight * 1.5 }}>
+      <h2 className="mb-4 text-xl font-semibold">Fridge Contents Analysis</h2>
+
+      <div className="min-h-0 flex-1">
+        <AnalysisCard items={items} onUpdateQuantity={onUpdateQuantity} />
+      </div>
+
+      <div className="space-y-4 border-t border-zinc-800 pt-4">
+        <div className="grid grid-cols-2 gap-4">
+          <Card className="border-zinc-700 bg-zinc-800">
+            <CardContent className="p-4">
+              <div className="text-zinc-400">Total Calories</div>
+              <div className="text-2xl font-bold text-white">
+                {totalCalories.toLocaleString()}
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-zinc-700 bg-zinc-800">
+            <CardContent className="p-4">
+              <div className="text-zinc-400">Total Value</div>
+              <div className="text-2xl font-bold text-white">
+                ${totalValue.toFixed(2)}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Button
+          onClick={searchRecipes}
+          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
+        >
+          <Utensils className="mr-2 h-4 w-4" />
+          Find Recipes with These Ingredients
+        </Button>
+      </div>
+    </div>
+  );
 }

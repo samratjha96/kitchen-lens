@@ -94,32 +94,12 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
     setEditingIndex(null);
   };
 
-  const totalCalories = items.reduce(
-    (acc, item) => acc + item.nutrition.calories * item.quantity,
-    0,
-  );
-  const totalPrice = items.reduce(
-    (acc, item) => acc + item.estimatedPrice * item.quantity,
-    0,
-  );
-
-  const searchRecipes = () => {
-    const ingredients = items.map((item) => item.name).join(", ");
-    window.open(
-      `https://www.google.com/search?q=recipes+with+${encodeURIComponent(ingredients)}`,
-      "_blank",
-    );
-  };
-
   return (
-    <Card className="border-zinc-800 bg-zinc-900">
-      <CardHeader>
-        <CardTitle className="text-white">Fridge Contents Analysis</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <Card className="flex h-full flex-col border-zinc-800 bg-zinc-900">
+      <CardContent className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-zinc-600 hover:scrollbar-thumb-zinc-500 min-h-0 flex-1 overflow-y-auto pt-4">
         <div className="space-y-4">
           {items.map((item, index) => {
-            const Icon = getCategoryIcon(item.category);
+            const Icon = getCategoryIcon(item.category as FoodItem["category"]);
             return (
               <div key={index} className="relative">
                 <Card className="overflow-hidden border-zinc-700 bg-zinc-800 transition-shadow hover:shadow-lg">
@@ -238,35 +218,6 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
               </div>
             );
           })}
-        </div>
-
-        <div className="space-y-4 border-t border-zinc-800 pt-6">
-          <div className="grid grid-cols-2 gap-4">
-            <Card className="border-zinc-700 bg-zinc-800">
-              <CardContent className="p-4">
-                <div className="text-zinc-400">Total Calories</div>
-                <div className="text-2xl font-bold text-white">
-                  {totalCalories}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-zinc-700 bg-zinc-800">
-              <CardContent className="p-4">
-                <div className="text-zinc-400">Total Value</div>
-                <div className="text-2xl font-bold text-white">
-                  ${totalPrice.toFixed(2)}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Button
-            onClick={searchRecipes}
-            className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
-          >
-            <Utensils className="mr-2 h-4 w-4" />
-            Find Recipes with These Ingredients
-          </Button>
         </div>
       </CardContent>
     </Card>

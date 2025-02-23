@@ -1,9 +1,16 @@
 import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { toGeminiSchema } from "gemini-zod";
 import type { z } from "zod";
-import type { LLMConfig, LLMResponse, ModelInterface, PromptContent } from "../types";
+import type {
+  LLMConfig,
+  LLMResponse,
+  ModelInterface,
+  PromptContent,
+} from "../types";
 
-export class GeminiModel<T extends z.ZodSchema> implements ModelInterface<z.infer<T>> {
+export class GeminiModel<T extends z.ZodSchema>
+  implements ModelInterface<z.infer<T>>
+{
   private model: GenerativeModel;
   private config: LLMConfig<T>;
 
@@ -23,12 +30,14 @@ export class GeminiModel<T extends z.ZodSchema> implements ModelInterface<z.infe
   async generate(prompt: PromptContent): Promise<LLMResponse<z.infer<T>>> {
     const result = await this.model.generateContent(prompt);
     const rawText = result.response.text();
-    
+
     const jsonData = JSON.parse(rawText);
     const parsed = this.config.responseSchema.safeParse(jsonData);
 
     if (!parsed.success) {
-      throw new Error(`Failed to parse response: ${JSON.stringify(parsed.error.issues)}`);
+      throw new Error(
+        `Failed to parse response: ${JSON.stringify(parsed.error.issues)}`,
+      );
     }
 
     return {
@@ -36,4 +45,4 @@ export class GeminiModel<T extends z.ZodSchema> implements ModelInterface<z.infe
       raw: rawText,
     };
   }
-} 
+}

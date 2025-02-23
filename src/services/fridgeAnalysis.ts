@@ -27,10 +27,20 @@ export async function analyze(image: File) {
     `Identify different types of food in this image. 
     Detect and label various foods, providing:
     - Name of each food item
-    - Location within the image
     - Nutritional information
-    - Food category (fruits, vegetables, grains, etc.)`,
+    - Food category (fruits, vegetables, grains, etc.)
+    - Realistic price per item
+
+    Rules:
+    0. If the image does not contain any food, return an empty array.
+    1. Only return the items that are visible in the image.
+    2. When you see an item that you are unsure of, return it as "other"
+    3. When you see egg cartons the quantity is 1 (dozen). Do not use 12 or price eggs individually. Ex: {"name": "Egg Carton", "quantity": 1, "price": 3.99}
+    4. Always use factual prices and nutritional information. This is extremely critical as we are using this data to make decisions about what to eat
+    `,
   ]);
+
+  console.log("LLM Response", data);
 
   return data;
 }
