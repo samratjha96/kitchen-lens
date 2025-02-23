@@ -3,9 +3,13 @@ import { AnalysisCard } from "@/components/AnalysisCard";
 
 type FridgeAnalysisProps = {
   analysis?: FridgeAnalysisType;
+  onUpdateQuantity?: (index: number, quantity: number) => void;
 };
 
-export function FridgeAnalysis({ analysis }: FridgeAnalysisProps) {
+export function FridgeAnalysis({
+  analysis,
+  onUpdateQuantity,
+}: FridgeAnalysisProps) {
   if (!analysis) {
     return (
       <div className="animate-pulse space-y-4">
@@ -30,5 +34,5 @@ export function FridgeAnalysis({ analysis }: FridgeAnalysisProps) {
     category: item.category ?? "other",
   }));
 
-  return <AnalysisCard items={items} />;
+  return <AnalysisCard items={items} onUpdateQuantity={onUpdateQuantity} />;
 }

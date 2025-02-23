@@ -1,16 +1,31 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { StarIcon, BoltIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { ImageUploader } from "@/components/ImageUploader";
 import { FridgeAnalysis } from "@/components/FridgeAnalysis";
 import type { FridgeAnalysis as FridgeAnalysisType } from "@/types/fridge";
+import { storageService } from "@/services/storageService";
 
 export default function HomePage() {
   const analysisRef = useRef<HTMLDivElement>(null);
   const [analysis, setAnalysis] = useState<FridgeAnalysisType>();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  useEffect(() => {
+    const storedAnalysis = storageService.getAnalysis();
+    if (storedAnalysis) {
+      setAnalysis(storedAnalysis);
+    }
+  }, []);
+
+  const handleUpdateQuantity = (index: number, quantity: number) => {
+    const updatedAnalysis = storageService.updateItem(index, quantity);
+    if (updatedAnalysis) {
+      setAnalysis(updatedAnalysis);
+    }
+  };
 
   const scrollToAnalysis = () => {
     analysisRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -21,6 +36,7 @@ export default function HomePage() {
   };
 
   const handleAnalysisComplete = (result: FridgeAnalysisType) => {
+    storageService.saveAnalysis(result);
     setAnalysis(result);
     setIsAnalyzing(false);
   };
@@ -116,7 +132,10 @@ export default function HomePage() {
                 />
               </div>
               <div>
-                <FridgeAnalysis analysis={analysis} />
+                <FridgeAnalysis
+                  analysis={analysis}
+                  onUpdateQuantity={handleUpdateQuantity}
+                />
               </div>
             </div>
           )}
