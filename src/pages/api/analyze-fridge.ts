@@ -3,7 +3,6 @@ import { LLM } from "@/lib/llm/llm";
 import { z } from "zod";
 import { FridgeItemSchema } from "@/types/fridge";
 
-// Define the expected request body schema
 const RequestSchema = z.object({
   image: z.string(),
 });
@@ -14,7 +13,7 @@ const ResponseSchema = z.object({
   items: z.array(FridgeItemSchema),
 });
 
-// Rate limiting and body size configuration
+// Vercel specific config for handling larger request bodies (files) and the time to process the request
 export const config = {
   api: {
     bodyParser: {
