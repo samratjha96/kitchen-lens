@@ -1,6 +1,6 @@
 "use server";
 
-import { LLM } from "@/lib/llm";
+import { LLM } from "@/lib/llm/llm";
 import { z } from "zod";
 import { FridgeItemSchema } from "@/types/fridge";
 
