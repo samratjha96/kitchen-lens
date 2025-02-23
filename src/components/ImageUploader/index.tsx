@@ -5,8 +5,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { analyze } from "@/services/fridgeAnalysis";
-import type { FridgeAnalysis } from "@/types/fridge";
+import type { FridgeAnalysis, FridgeItem } from "@/types/fridge";
 import { DropZone } from "./DropZone";
 import Image from "next/image";
 
@@ -52,14 +51,27 @@ export function ImageUploader({
 
     try {
       setLoading(true);
-      const analysis = await analyze(image);
+      const imageData = await image.arrayBuffer();
+      const base64Image = Buffer.from(imageData).toString("base64");
+
+      const response = await fetch("/api/analyze-fridge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: base64Image }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to analyze image");
+      }
+
+      const analysis = (await response.json()) as { items: FridgeItem[] };
+
+      console.log("Raw API Response:", analysis);
 
       const transformedAnalysis: FridgeAnalysis = {
-        items: analysis.items.map((item) => ({
-          ...item,
-          calories: item.nutrition.calories,
-          estimatedValue: item.estimatedValue,
-        })),
+        items: analysis.items,
         totalCalories: analysis.items.reduce(
           (sum, item) => sum + item.nutrition.calories,
           0,
@@ -70,13 +82,15 @@ export function ImageUploader({
         ),
       };
 
+      console.log("Transformed Analysis:", transformedAnalysis);
+
       onAnalysisComplete(transformedAnalysis);
     } catch (error) {
       setError(
         `Failed to analyze image. Potential causes are:
         1. API key is invalid
-        2. Image is taking longer than 10 seconds to process (Vercel serverless function limit)\n
-        3. Image is not a valid photo`
+        2. Image is taking longer than 10 seconds to process (Vercel serverless function limit)
+        3. Image is not a valid photo`,
       );
       console.error("Error analyzing image:", error);
     } finally {
@@ -86,13 +100,13 @@ export function ImageUploader({
 
   const loadTestImage = async () => {
     try {
-      const response = await fetch('/fridge.jpeg');
+      const response = await fetch("/fridge.jpeg");
       const blob = await response.blob();
-      const file = new File([blob], 'fridge.jpeg', { type: 'image/jpeg' });
+      const file = new File([blob], "fridge.jpeg", { type: "image/jpeg" });
       handleFileSelect(file);
     } catch (error) {
-      setError('Failed to load test image');
-      console.error('Error loading test image:', error);
+      setError("Failed to load test image");
+      console.error("Error loading test image:", error);
     }
   };
 
