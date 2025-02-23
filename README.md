@@ -4,7 +4,7 @@ An AI-powered web application that transforms how you interact with your kitchen
 
 You can try it out [here](https://kitchen-lens.vercel.app/).
 
-![Demo](https://imgur.com/a/N90iN7s)
+![Kitchen Lens Demo](public/demo.gif)
 
 ## ✨ Features
 

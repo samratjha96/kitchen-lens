@@ -137,7 +137,6 @@ export default function HomePage() {
             <div className="flex justify-center">
               <div className="w-full max-w-xl">
                 <ImageUploader
-                  ref={imageRef}
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
@@ -147,7 +146,6 @@ export default function HomePage() {
             <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
               <div className="lg:sticky lg:top-4">
                 <ImageUploader
-                  ref={imageRef}
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
