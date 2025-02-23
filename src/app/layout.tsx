@@ -5,7 +5,7 @@ import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "AI Fridge Analyzer",
+  title: "Kitchen lens",
   description: "Analyze your fridge contents with AI",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
