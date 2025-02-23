@@ -62,7 +62,6 @@ export default function HomePage() {
 
   return (
     <main className="flex flex-col">
-      {/* Hero Section - Full Viewport Height */}
       <section className="flex min-h-[100vh] flex-col items-center justify-center bg-background">
         <div className="container flex flex-col items-center justify-center gap-8 px-4 text-center">
           <div className="space-y-4">
@@ -127,7 +126,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* App Section - Full Viewport Height */}
       <section
         ref={analysisRef}
         className="flex min-h-[100vh] w-full items-center justify-center bg-black"

@@ -6,7 +6,7 @@ import type {
   LLMResponse,
   ModelInterface,
   PromptContent,
-} from "../types";
+} from "@/types/llm";
 
 export class GeminiModel<T extends z.ZodSchema>
   implements ModelInterface<z.infer<T>>

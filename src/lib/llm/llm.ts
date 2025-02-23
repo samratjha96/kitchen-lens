@@ -5,7 +5,7 @@ import type {
   LLMResponse,
   ModelInterface,
   PromptContent,
-} from "./types";
+} from "../../types/llm";
 import { GeminiModel } from "./providers/gemini";
 
 export class LLM<T extends z.ZodSchema> {
