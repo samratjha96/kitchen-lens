@@ -5,7 +5,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { identifyFoods } from "@/services/geminiService";
+import { analyze } from "@/services/fridgeAnalysis";
 import type { FridgeAnalysis } from "@/types/fridge";
 import { DropZone } from "./DropZone";
 
@@ -51,7 +51,7 @@ export function ImageUploader({
 
     try {
       setLoading(true);
-      const analysis = await identifyFoods(image);
+      const analysis = await analyze(image);
 
       const transformedAnalysis: FridgeAnalysis = {
         items: analysis.items.map((item) => ({

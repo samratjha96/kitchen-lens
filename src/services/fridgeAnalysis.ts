@@ -1,69 +1,35 @@
-import type { FridgeAnalysis } from "@/types/fridge";
+"use server";
 
-export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+import { LLM } from "@/lib/llm";
+import { z } from "zod";
+import { FridgeItemSchema } from "@/types/fridge";
 
-  return {
-    items: [
-      {
-        name: "Milk",
-        quantity: 1,
-        unit: "gallon",
-        nutrition: {
-          calories: 103,
-          protein: 8,
-          carbs: 12,
-          fat: 2.4,
-        },
-        estimatedValue: 3.99,
-        expiryDate: "2024-04-01",
-        category: "dairy",
+const ResponseSchema = z.object({
+  items: z.array(FridgeItemSchema),
+});
+
+export async function analyze(image: File) {
+  const imageData = await image.arrayBuffer();
+  
+  const foodAnalyzer = new LLM({
+    responseSchema: ResponseSchema,
+    systemInstruction: "You are a vision AI and food expert that can analyze images of food and return the contents of the image in a structured format.",
+  });
+
+  const { data } = await foodAnalyzer.generate([
+    {
+      inlineData: {
+        data: Buffer.from(imageData).toString("base64"),
+        mimeType: "image/png",
       },
-      {
-        name: "Eggs",
-        quantity: 12,
-        unit: "pieces",
-        nutrition: {
-          calories: 70,
-          protein: 6,
-          carbs: 0,
-          fat: 5,
-        },
-        estimatedValue: 4.99,
-        expiryDate: "2024-03-28",
-        category: "dairy",
-      },
-      {
-        name: "Salmon Fillet",
-        quantity: 2,
-        unit: "pieces",
-        nutrition: {
-          calories: 208,
-          protein: 22,
-          carbs: 0,
-          fat: 13,
-        },
-        estimatedValue: 12.99,
-        expiryDate: "2024-03-25",
-        category: "seafood",
-      },
-      {
-        name: "Organic Apples",
-        quantity: 6,
-        unit: "pieces",
-        nutrition: {
-          calories: 95,
-          protein: 0.5,
-          carbs: 25,
-          fat: 0.3,
-        },
-        estimatedValue: 5.99,
-        expiryDate: "2024-03-30",
-        category: "produce",
-      },
-    ],
-    totalCalories: 1524,
-    totalValue: 27.96,
-  };
-};
+    },
+    `Identify different types of food in this image. 
+    Detect and label various foods, providing:
+    - Name of each food item
+    - Location within the image
+    - Nutritional information
+    - Food category (fruits, vegetables, grains, etc.)`,
+  ]);
+
+  return data;
+}

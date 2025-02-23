@@ -1,47 +1,73 @@
 // import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { toGeminiSchema } from "gemini-zod";
-
 import { env } from "@/env";
 import { z } from "zod";
 
 type ModelProvider = "gemini" | "openai" | "anthropic";
 type ModelName = "gemini-1.5-pro-latest" | "gemini-pro" | "gpt-4" | "claude-3";
 
-interface LLMConfig {
+interface LLMConfig<T extends z.ZodSchema> {
   provider: ModelProvider;
   model: ModelName;
   systemInstruction: string;
-  responseSchema: z.ZodSchema;
+  responseSchema: T;
 }
 
-const defaultConfig: LLMConfig = {
-  provider: "gemini",
-  model: "gemini-1.5-pro-latest",
-  systemInstruction:
-    "You are a helpful assistant that can answer questions and help with tasks.",
-  responseSchema: z.string(),
-};
+interface LLMResponse<T> {
+  data: T;
+  raw: string;
+}
 
-export const createLLM = (config: Partial<LLMConfig> = {}) => {
-  const finalConfig = { ...defaultConfig, ...config };
+export class LLM<T extends z.ZodSchema> {
+  private config: LLMConfig<T>;
+  private model: any;
 
-  switch (finalConfig.provider) {
-    case "gemini":
-      const google = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API_KEY);
-      return google.getGenerativeModel({
-        model: finalConfig.model,
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: toGeminiSchema(finalConfig.responseSchema),
-        },
-        systemInstruction: finalConfig.systemInstruction,
-      });
-    case "openai":
-    case "anthropic":
-      throw new Error(`Provider ${finalConfig.provider} not yet implemented`);
-
-    default:
-      throw new Error(`Unknown provider: ${String(finalConfig.provider)}`);
+  constructor(config: Partial<LLMConfig<T>> & { responseSchema: T }) {
+    this.config = {
+      provider: "gemini",
+      model: "gemini-1.5-pro-latest",
+      systemInstruction: "",
+      ...config,
+    };
+    this.model = this.initialize();
   }
-};
+
+  private initialize() {
+    switch (this.config.provider) {
+      case "gemini":
+        const google = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API_KEY);
+        return google.getGenerativeModel({
+          model: this.config.model,
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: toGeminiSchema(this.config.responseSchema),
+          },
+          systemInstruction: this.config.systemInstruction,
+        });
+
+      case "openai":
+      case "anthropic":
+        throw new Error(`Provider ${this.config.provider} not yet implemented`);
+
+      default:
+        throw new Error(`Unknown provider: ${String(this.config.provider)}`);
+    }
+  }
+
+  async generate(prompt: string | Array<string | { inlineData: { data: string; mimeType: string } }>): Promise<LLMResponse<z.infer<T>>> {
+    const result = await this.model.generateContent(prompt);
+    const rawText = result.response.text();
+    const jsonData = JSON.parse(rawText);
+    const parsed = this.config.responseSchema.safeParse(jsonData);
+    
+    if (!parsed.success) {
+      throw new Error(`Failed to parse response: ${parsed.error}`);
+    }
+
+    return {
+      data: parsed.data,
+      raw: rawText,
+    };
+  }
+}
