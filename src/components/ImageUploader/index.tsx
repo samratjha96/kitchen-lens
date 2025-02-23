@@ -73,7 +73,10 @@ export function ImageUploader({
       onAnalysisComplete(transformedAnalysis);
     } catch (error) {
       setError(
-        "Failed to analyze image. Please check your API key and try again.",
+        `Failed to analyze image. Potential causes are:
+        1. API key is invalid
+        2. Image is taking longer than 10 seconds to process (Vercel serverless function limit)\n
+        3. Image is not a valid photo`
       );
       console.error("Error analyzing image:", error);
     } finally {
