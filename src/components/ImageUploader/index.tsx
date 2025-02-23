@@ -88,9 +88,11 @@ export function ImageUploader({
     } catch (error) {
       setError(
         `Failed to analyze image. Potential causes are:
-        1. API key is invalid
-        2. Image is taking longer than 10 seconds to process (Vercel serverless function limit)
-        3. Image is not a valid photo`,
+
+        1. You are getting rate limited by Google. Just wait a few minutes and try again.
+        2. API key is invalid
+        3. Image is taking longer than 60 seconds to process (Vercel serverless function limit)
+        4. Image is not a valid photo`,
       );
       console.error("Error analyzing image:", error);
     } finally {
@@ -171,7 +173,7 @@ export function ImageUploader({
         {error && (
           <div className="flex items-center gap-2 text-sm text-red-500">
             <AlertCircle className="h-4 w-4" />
-            <span>{error}</span>
+            <span className="whitespace-pre-line">{error}</span>
           </div>
         )}
 
