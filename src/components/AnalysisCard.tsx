@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Edit2, Save, ChevronDown, ChevronUp, Utensils, ShoppingCart, Apple, Beef, Fish, Milk } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
 
 interface Nutrition {
   calories: number
@@ -54,11 +53,9 @@ const NutritionBar = ({
       <span>{value}g</span>
     </div>
     <div className="h-1.5 rounded-full bg-zinc-800">
-      <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: `${(value / max) * 100}%` }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`h-full rounded-full ${color}`}
+      <div
+        className={`h-full rounded-full ${color} transition-[width] duration-500 ease-out`}
+        style={{ width: `${(value / max) * 100}%` }}
       />
     </div>
   </div>
@@ -75,8 +72,10 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
 
   const handleEdit = (index: number) => {
+    const item = items[index]
+    if (!item) return
     setEditingIndex(index)
-    setEditValue(items[index].quantity)
+    setEditValue(item.quantity)
   }
 
   const handleSave = (index: number) => {
@@ -102,17 +101,8 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
           {items.map((item, index) => {
             const Icon = getCategoryIcon(item.category)
             return (
-              <motion.div
-                key={index}
-                layout
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card
-                  className="overflow-hidden bg-zinc-800 border-zinc-700 transition-shadow hover:shadow-lg"
-                  onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
-                >
+              <div key={index} className="relative">
+                <Card className="overflow-hidden bg-zinc-800 border-zinc-700 transition-shadow hover:shadow-lg">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-4">
                       <div className="p-2 rounded-full bg-zinc-700">
@@ -179,19 +169,19 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
                       </Button>
                     </div>
 
-                    <AnimatePresence>
-                      {expandedIndex === index && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="pt-4 mt-4 border-t border-zinc-700"
-                        >
+                    {expandedIndex === index && (
+                      <div
+                        className="border-t border-zinc-700 transition-[height,opacity] duration-200 ease-in-out"
+                      >
+                        <div className="pt-4 mt-4">
                           <div className="space-y-3">
                             <div className="flex items-center justify-between">
-                              <span className="text-sm font-medium text-zinc-300">Nutrition per serving</span>
-                              <span className="text-sm text-zinc-400">{item.nutrition.calories} calories</span>
+                              <span className="text-sm font-medium text-zinc-300">
+                                Nutrition per serving
+                              </span>
+                              <span className="text-sm text-zinc-400">
+                                {item.nutrition.calories} calories
+                              </span>
                             </div>
                             <NutritionBar
                               value={item.nutrition.protein}
@@ -199,15 +189,25 @@ export function AnalysisCard({ items, onUpdateQuantity }: AnalysisCardProps) {
                               label="Protein"
                               color="bg-emerald-500"
                             />
-                            <NutritionBar value={item.nutrition.carbs} max={50} label="Carbs" color="bg-blue-500" />
-                            <NutritionBar value={item.nutrition.fat} max={20} label="Fat" color="bg-amber-500" />
+                            <NutritionBar 
+                              value={item.nutrition.carbs} 
+                              max={50} 
+                              label="Carbs" 
+                              color="bg-blue-500" 
+                            />
+                            <NutritionBar 
+                              value={item.nutrition.fat} 
+                              max={20} 
+                              label="Fat" 
+                              color="bg-amber-500" 
+                            />
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             )
           })}
         </div>
