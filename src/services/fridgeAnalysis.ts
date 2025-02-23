@@ -1,5 +1,7 @@
 "use server";
 
+export const maxDuration = 60; // https://vercel.com/docs/functions/configuring-functions/duration
+
 import { LLM } from "@/lib/llm/llm";
 import { z } from "zod";
 import { FridgeItemSchema } from "@/types/fridge";
