@@ -157,6 +157,36 @@ npm run dev
 
 Visit `http://localhost:3000` to see the app in action.
 
+## 🐛 Debugging
+
+### Common Analysis Issues
+
+If you encounter "Failed to analyze image", here are the potential causes and solutions:
+
+1. **API Key Issues**
+   - Ensure your `GOOGLE_GEMINI_API_KEY` is correctly set in `.env.local` if developing locally
+   - Verify the API key has access to Gemini 1.5 Pro
+   - Check API key usage quotas in Google AI Studio
+
+2. **Processing Timeout**
+   - The analysis may fail if processing takes longer than 10 seconds (Vercel serverless function limit)
+   - Solutions:
+     - Try with a smaller image
+     - Ensure good internet connectivity
+     - Use the test image to verify if it's a timeout issue
+
+3. **Image Issues**
+   - Ensure the image is:
+     - A clear photo of your fridge contents
+     - In a supported format (JPG, PNG, WEBP)
+     - Not corrupted or empty
+     - Under 10MB in size
+
+4. **Network Issues**
+   - Check your internet connection
+   - Verify you're not behind a restrictive firewall
+   - Try disabling VPN if you're using one
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
