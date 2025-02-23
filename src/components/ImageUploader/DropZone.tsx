@@ -6,16 +6,17 @@ interface DropZoneProps {
 }
 
 export function DropZone({ onDrop, dragActive }: DropZoneProps) {
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const file = e?.dataTransfer?.files?.[0];
-    if (file) onDrop(file);
-  };
-
   return (
     <label
       htmlFor="image-upload"
-      className="flex cursor-pointer flex-col items-center gap-4 p-8 text-center"
+      onDrop={(e) => {
+        e.preventDefault()
+        const file = e?.dataTransfer?.files?.[0]
+        if (file) onDrop(file)
+      }}
+      className={`flex cursor-pointer flex-col items-center gap-4 p-8 text-center ${
+        dragActive ? "bg-blue-500/5" : ""
+      }`}
     >
       <div className="rounded-full bg-muted p-4">
         <Upload className="h-8 w-8 text-muted-foreground" />
@@ -31,4 +32,4 @@ export function DropZone({ onDrop, dragActive }: DropZoneProps) {
       </p>
     </label>
   );
-} 
+}

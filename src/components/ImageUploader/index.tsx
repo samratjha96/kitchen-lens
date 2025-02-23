@@ -5,7 +5,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { test } from '@/services/geminiService';
+import { test } from "@/services/geminiService";
 import type { FridgeAnalysis } from "@/types/fridge";
 import { DropZone } from "./DropZone";
 import { ImagePreview } from "./ImagePreview";
@@ -15,7 +15,10 @@ interface ImageUploaderProps {
   onAnalysisStart: () => void;
 }
 
-export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUploaderProps) {
+export function ImageUploader({
+  onAnalysisComplete,
+  onAnalysisStart,
+}: ImageUploaderProps) {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -49,19 +52,30 @@ export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUplo
 
     try {
       setLoading(true);
-      const geminiResponse = await test();
-      const analysis: FridgeAnalysis = {
-        items: geminiResponse.items.map(item => ({
+      const analysis = await test();
+      console.log(analysis);
+
+      const transformedAnalysis: FridgeAnalysis = {
+        items: analysis.items.map((item) => ({
           ...item,
           calories: item.nutrition.calories,
-          estimatedValue: item.estimatedPrice
+          estimatedValue: item.estimatedValue,
         })),
-        totalCalories: geminiResponse.items.reduce((sum, item) => sum + item.nutrition.calories, 0),
-        totalValue: geminiResponse.items.reduce((sum, item) => sum + item.estimatedPrice, 0)
+        totalCalories: analysis.items.reduce(
+          (sum, item) => sum + item.nutrition.calories,
+          0,
+        ),
+        totalValue: analysis.items.reduce(
+          (sum, item) => sum + item.estimatedValue,
+          0,
+        ),
       };
-      onAnalysisComplete(analysis);
+
+      onAnalysisComplete(transformedAnalysis);
     } catch (error) {
-      setError("Failed to analyze image due to an unexpected error. Please try again later.");
+      setError(
+        "Failed to analyze image. Please check your API key and try again.",
+      );
       console.error("Error analyzing image:", error);
     } finally {
       setLoading(false);
@@ -77,14 +91,18 @@ export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUplo
         onDrop={handleDrag}
         className={cn(
           "relative flex min-h-[400px] flex-col items-center justify-center rounded-lg border-2 border-dashed transition-all duration-200 ease-in-out",
-          dragActive ? "border-blue-500 bg-blue-500/5" : "border-zinc-800 hover:border-zinc-700",
+          dragActive
+            ? "border-blue-500 bg-blue-500/5"
+            : "border-zinc-800 hover:border-zinc-700",
           preview ? "bg-zinc-900" : "bg-zinc-900",
         )}
       >
         <input
           type="file"
           accept="image/*"
-          onChange={(e) => e.target.files?.[0] && handleFileSelect(e.target.files[0])}
+          onChange={(e) =>
+            e.target.files?.[0] && handleFileSelect(e.target.files[0])
+          }
           className="hidden"
           id="image-upload"
         />
@@ -93,7 +111,9 @@ export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUplo
           <ImagePreview
             preview={preview}
             onRemove={removeImage}
-            onChangeImage={() => document.getElementById("image-upload")?.click()}
+            onChangeImage={() =>
+              document.getElementById("image-upload")?.click()
+            }
           />
         ) : (
           <DropZone onDrop={handleFileSelect} dragActive={dragActive} />
@@ -107,7 +127,7 @@ export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUplo
             <span>{error}</span>
           </div>
         )}
-        
+
         <Button
           onClick={analyzeImage}
           className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
@@ -125,4 +145,4 @@ export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUplo
       </div>
     </Card>
   );
-} 
+}

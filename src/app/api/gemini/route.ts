@@ -1,21 +1,15 @@
-import { google } from '@ai-sdk/google';
-import { generateText } from 'ai';
+import type { NextRequest } from 'next/server'
+import { generateText } from 'ai'
+import { createLLM } from '@/lib/llm'
 
-export async function POST(req: Request) {
-  try {
-    const { prompt } = await req.json();
+export async function POST(req: NextRequest) {
+  const body = (await req.json()) as { prompt: string; image?: string }
+  const { prompt } = body
 
-    const response = await generateText({
-      model: google('gemini-1.5-pro-latest'),
-      prompt,
-    });
+  const response = await generateText({
+    model: createLLM({ provider: 'gemini', model: 'gemini-1.5-pro-latest' }),
+    prompt,
+  })
 
-    return Response.json({ text: response.text });
-  } catch (error) {
-    console.error('Gemini API Error:', error);
-    return Response.json(
-      { error: 'Failed to process request' },
-      { status: 500 }
-    );
-  }
+  return Response.json(response)
 } 

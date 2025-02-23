@@ -8,7 +8,11 @@ interface ImagePreviewProps {
   onChangeImage: () => void;
 }
 
-export function ImagePreview({ preview, onRemove, onChangeImage }: ImagePreviewProps) {
+export function ImagePreview({
+  preview,
+  onRemove,
+  onChangeImage,
+}: ImagePreviewProps) {
   return (
     <div className="relative h-full min-h-[300px] w-full">
       <Button
@@ -37,4 +41,4 @@ export function ImagePreview({ preview, onRemove, onChangeImage }: ImagePreviewP
       </Button>
     </div>
   );
-} 
+}
