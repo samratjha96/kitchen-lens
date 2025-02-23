@@ -10,10 +10,11 @@ const ResponseSchema = z.object({
 
 export async function analyze(image: File) {
   const imageData = await image.arrayBuffer();
-  
+
   const foodAnalyzer = new LLM({
     responseSchema: ResponseSchema,
-    systemInstruction: "You are a vision AI and food expert that can analyze images of food and return the contents of the image in a structured format.",
+    systemInstruction:
+      "You are a vision AI and food expert that can analyze images of food and return the contents of the image in a structured format.",
   });
 
   const { data } = await foodAnalyzer.generate([

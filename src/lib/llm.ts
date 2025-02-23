@@ -1,5 +1,4 @@
-// import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { toGeminiSchema } from "gemini-zod";
 import { env } from "@/env";
 import { z } from "zod";
@@ -21,7 +20,7 @@ interface LLMResponse<T> {
 
 export class LLM<T extends z.ZodSchema> {
   private config: LLMConfig<T>;
-  private model: any;
+  private model: GenerativeModel;
 
   constructor(config: Partial<LLMConfig<T>> & { responseSchema: T }) {
     this.config = {
@@ -33,7 +32,7 @@ export class LLM<T extends z.ZodSchema> {
     this.model = this.initialize();
   }
 
-  private initialize() {
+  private initialize(): GenerativeModel {
     switch (this.config.provider) {
       case "gemini":
         const google = new GoogleGenerativeAI(env.GOOGLE_GEMINI_API_KEY);
@@ -55,19 +54,30 @@ export class LLM<T extends z.ZodSchema> {
     }
   }
 
-  async generate(prompt: string | Array<string | { inlineData: { data: string; mimeType: string } }>): Promise<LLMResponse<z.infer<T>>> {
+  async generate(
+    prompt:
+      | string
+      | Array<string | { inlineData: { data: string; mimeType: string } }>,
+  ): Promise<LLMResponse<z.infer<T>>> {
     const result = await this.model.generateContent(prompt);
     const rawText = result.response.text();
-    const jsonData = JSON.parse(rawText);
-    const parsed = this.config.responseSchema.safeParse(jsonData);
-    
-    if (!parsed.success) {
-      throw new Error(`Failed to parse response: ${parsed.error}`);
-    }
 
-    return {
-      data: parsed.data,
-      raw: rawText,
-    };
+    try {
+      const jsonData = JSON.parse(rawText);
+      const parsed = this.config.responseSchema.safeParse(jsonData);
+
+      if (!parsed.success) {
+        throw new Error(
+          `Failed to parse response: ${JSON.stringify(parsed.error.issues)}`,
+        );
+      }
+
+      return {
+        data: parsed.data,
+        raw: rawText,
+      };
+    } catch (e) {
+      throw e;
+    }
   }
 }
