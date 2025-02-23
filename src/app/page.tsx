@@ -1,16 +1,28 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { StarIcon, BoltIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { ImageUploader } from "@/components/ImageUploader";
 import { FridgeAnalysis } from "@/components/FridgeAnalysis";
+import type { FridgeAnalysis as FridgeAnalysisType } from "@/types/fridge";
 
 export default function HomePage() {
   const analysisRef = useRef<HTMLDivElement>(null);
+  const [analysis, setAnalysis] = useState<FridgeAnalysisType>();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const scrollToAnalysis = () => {
     analysisRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleAnalysisStart = () => {
+    setIsAnalyzing(true);
+  };
+
+  const handleAnalysisComplete = (result: FridgeAnalysisType) => {
+    setAnalysis(result);
+    setIsAnalyzing(false);
   };
 
   return (
@@ -32,11 +44,26 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-4">
-            <Button size="lg" onClick={scrollToAnalysis}>
+            <Button 
+              size="lg" 
+              onClick={scrollToAnalysis}
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+            >
               Get Started
             </Button>
-            <Button size="lg" variant="outline" asChild>
-              <Link href="/how-it-works">How it Works</Link>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              asChild
+              className="border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10 text-blue-400 transition-all duration-300"
+            >
+              <Link 
+                href="https://github.com/samratjha96/kitchen-lens" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Source Code
+              </Link>
             </Button>
           </div>
 
@@ -68,14 +95,28 @@ export default function HomePage() {
         className="min-h-[100vh] w-full bg-black flex items-center justify-center"
       >
         <div className="container max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div className="lg:sticky lg:top-4">
-              <ImageUploader />
+          {!analysis && !isAnalyzing ? (
+            <div className="flex justify-center">
+              <div className="max-w-xl w-full">
+                <ImageUploader 
+                  onAnalysisComplete={handleAnalysisComplete}
+                  onAnalysisStart={handleAnalysisStart}
+                />
+              </div>
             </div>
-            <div>
-              <FridgeAnalysis />
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              <div className="lg:sticky lg:top-4">
+                <ImageUploader 
+                  onAnalysisComplete={handleAnalysisComplete}
+                  onAnalysisStart={handleAnalysisStart}
+                />
+              </div>
+              <div>
+                <FridgeAnalysis analysis={analysis} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </main>

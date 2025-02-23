@@ -6,8 +6,15 @@ import { Upload, X, Loader2, ImagePlus } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { analyzeFridgeImage } from "@/services/fridgeAnalysis"
+import type { FridgeAnalysis } from "@/types/fridge"
 
-export function ImageUploader() {
+interface ImageUploaderProps {
+  onAnalysisComplete: (analysis: FridgeAnalysis) => void;
+  onAnalysisStart: () => void;
+}
+
+export function ImageUploader({ onAnalysisComplete, onAnalysisStart }: ImageUploaderProps) {
   const [image, setImage] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -60,11 +67,12 @@ export function ImageUploader() {
 
   const handleAnalyze = async () => {
     if (!image) return
+    onAnalysisStart()
 
     try {
       setLoading(true)
-      // TODO: Implement your analysis logic here
-      await new Promise(resolve => setTimeout(resolve, 2000)) // Simulated delay
+      const analysis = await analyzeFridgeImage(image)
+      onAnalysisComplete(analysis)
     } catch (error) {
       console.error("Error analyzing image:", error)
     } finally {
@@ -99,7 +107,7 @@ export function ImageUploader() {
               type="button"
               variant="secondary"
               size="icon"
-              className="absolute top-2 right-2 z-10 rounded-full"
+              className="absolute top-2 right-2 z-10 rounded-full bg-black/50 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white transition-all duration-300"
               onClick={removeImage}
             >
               <X className="h-4 w-4" />
@@ -113,7 +121,7 @@ export function ImageUploader() {
             <Button
               type="button"
               variant="secondary"
-              className="absolute bottom-2 right-2 z-10"
+              className="absolute bottom-2 right-2 z-10 bg-black/50 hover:bg-black/70 backdrop-blur-sm border border-white/10 text-white transition-all duration-300"
               onClick={() => document.getElementById("image-upload")?.click()}
             >
               <ImagePlus className="h-4 w-4 mr-2" />
@@ -149,7 +157,7 @@ export function ImageUploader() {
 
       <Button
         onClick={handleAnalyze}
-        className="w-full mt-4 bg-blue-500 hover:bg-blue-600"
+        className="w-full mt-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
         disabled={!image || loading}
       >
         {loading ? (
