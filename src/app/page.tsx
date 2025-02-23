@@ -28,7 +28,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-col">
       {/* Hero Section - Full Viewport Height */}
-      <section className="min-h-[100vh] flex flex-col items-center justify-center bg-background">
+      <section className="flex min-h-[100vh] flex-col items-center justify-center bg-background">
         <div className="container flex flex-col items-center justify-center gap-8 px-4 text-center">
           <div className="space-y-4">
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">
@@ -39,27 +39,28 @@ export default function HomePage() {
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
               Upload a photo of your fridge and let AI analyze its contents. Get
-              instant insights about your food inventory and suggestions for meals.
+              instant insights about your food inventory and suggestions for
+              meals.
             </p>
           </div>
 
           <div className="flex gap-4">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={scrollToAnalysis}
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg hover:shadow-blue-500/25 transition-all duration-300"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
             >
               Get Started
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
+            <Button
+              size="lg"
+              variant="outline"
               asChild
-              className="border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10 text-blue-400 transition-all duration-300"
+              className="border-blue-500/20 text-blue-400 transition-all duration-300 hover:border-blue-500/40 hover:bg-blue-500/10"
             >
-              <Link 
-                href="https://github.com/samratjha96/kitchen-lens" 
-                target="_blank" 
+              <Link
+                href="https://github.com/samratjha96/kitchen-lens"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 Source Code
@@ -81,7 +82,9 @@ export default function HomePage() {
                 <div className="relative flex flex-col items-center text-center">
                   <feature.icon className="mb-3 h-8 w-8 text-blue-500" />
                   <h3 className="mb-2 font-semibold">{feature.title}</h3>
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -90,24 +93,24 @@ export default function HomePage() {
       </section>
 
       {/* App Section - Full Viewport Height */}
-      <section 
+      <section
         ref={analysisRef}
-        className="min-h-[100vh] w-full bg-black flex items-center justify-center"
+        className="flex min-h-[100vh] w-full items-center justify-center bg-black"
       >
-        <div className="container max-w-7xl mx-auto px-4">
+        <div className="container mx-auto max-w-7xl px-4">
           {!analysis && !isAnalyzing ? (
             <div className="flex justify-center">
-              <div className="max-w-xl w-full">
-                <ImageUploader 
+              <div className="w-full max-w-xl">
+                <ImageUploader
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
               <div className="lg:sticky lg:top-4">
-                <ImageUploader 
+                <ImageUploader
                   onAnalysisComplete={handleAnalysisComplete}
                   onAnalysisStart={handleAnalysisStart}
                 />
