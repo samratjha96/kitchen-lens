@@ -12,6 +12,11 @@ const config = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    experimental: {
+        serverActions: {
+            bodySizeLimit: "10mb",
+        },
+    },
 };
 
 export default config;
