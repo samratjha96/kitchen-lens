@@ -17,7 +17,6 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
           fat: 2.4,
         },
         estimatedValue: 3.99,
-        expiryDate: "2024-04-01",
         category: "dairy",
       },
       {
@@ -31,7 +30,6 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
           fat: 5,
         },
         estimatedValue: 4.99,
-        expiryDate: "2024-03-28",
         category: "dairy",
       },
       {
@@ -45,7 +43,6 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
           fat: 13,
         },
         estimatedValue: 12.99,
-        expiryDate: "2024-03-25",
         category: "seafood",
       },
       {
@@ -59,7 +56,6 @@ export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
           fat: 0.3,
         },
         estimatedValue: 5.99,
-        expiryDate: "2024-03-30",
         category: "produce",
       },
     ],

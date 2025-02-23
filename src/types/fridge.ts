@@ -13,7 +13,6 @@ export const FridgeItemSchema = z.object({
   nutrition: NutritionSchema,
   estimatedValue: z.number(),
   unit: z.string().optional(),
-  expiryDate: z.string().optional(),
   category: z.enum(["produce", "dairy", "meat", "seafood", "other"]).optional(),
 });
 
