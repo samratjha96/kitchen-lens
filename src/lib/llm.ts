@@ -1,7 +1,7 @@
-import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import type { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { toGeminiSchema } from "gemini-zod";
 import { env } from "@/env";
-import { z } from "zod";
+import type { z } from "zod";
 
 type ModelProvider = "gemini" | "openai" | "anthropic";
 type ModelName = "gemini-1.5-pro-latest" | "gemini-pro" | "gpt-4" | "claude-3";
