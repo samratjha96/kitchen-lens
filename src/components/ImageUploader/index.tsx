@@ -81,6 +81,18 @@ export function ImageUploader({
     }
   };
 
+  const loadTestImage = async () => {
+    try {
+      const response = await fetch('/fridge.jpeg');
+      const blob = await response.blob();
+      const file = new File([blob], 'fridge.jpeg', { type: 'image/jpeg' });
+      handleFileSelect(file);
+    } catch (error) {
+      setError('Failed to load test image');
+      console.error('Error loading test image:', error);
+    }
+  };
+
   return (
     <Card className="border-zinc-800 bg-zinc-900">
       <div
@@ -146,20 +158,31 @@ export function ImageUploader({
           </div>
         )}
 
-        <Button
-          onClick={analyzeImage}
-          className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
-          disabled={!image || loading}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Analyzing your fridge...
-            </>
+        <div className="flex justify-center gap-2 py-2">
+          {!preview ? (
+            <Button
+              onClick={loadTestImage}
+              className="bg-gradient-to-r from-emerald-500 to-teal-500 px-8 text-white shadow-lg transition-all duration-300 hover:from-emerald-600 hover:to-teal-600 hover:shadow-emerald-500/25"
+            >
+              Use test image
+            </Button>
           ) : (
-            "Analyze Contents"
+            <Button
+              onClick={analyzeImage}
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 px-8 text-white shadow-lg transition-all duration-300 hover:from-blue-600 hover:to-cyan-600 hover:shadow-blue-500/25"
+              disabled={!image || loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing your fridge...
+                </>
+              ) : (
+                "Analyze Contents"
+              )}
+            </Button>
           )}
-        </Button>
+        </div>
       </div>
     </Card>
   );
