@@ -14,6 +14,7 @@ export default function HomePage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
+    storageService.clearAnalysis();
     const storedAnalysis = storageService.getAnalysis();
     if (storedAnalysis) {
       setAnalysis(storedAnalysis);
