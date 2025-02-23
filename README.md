@@ -24,7 +24,7 @@ You can try it out [here](https://kitchen-lens.vercel.app/).
   - Shadcn UI components
   - Lucide icons for consistent iconography
 - **AI Integration:**
-  - Gemini 1.5-pro-flash for image analysis
+  - Gemini 2.0-flash for image analysis (lite version is being used and is currently in preview/free)
   - Modular LLM architecture supporting multiple providers
 - **Type Safety:** TypeScript with Zod schema validation
 - **State Management:** React hooks with local state
@@ -40,7 +40,7 @@ I always hate having to sign up for something just to try a demo. That's why I m
 including a test image that you can use to try it out without uploading anything.
 
 #### AI Implementation
-- **Google Gemini Model (1.5 pro falsh)**: Selected for its:
+- **Google Gemini Model (2.0 flash lite)**: Selected for its:
   - Multimodal capabilities (image + text understanding)
   - Generous free tier
   - Structured output capabilities
@@ -59,51 +59,27 @@ class LLM<T extends z.ZodSchema> {
 ```
 
 ### Technical Challenges & Solutions
+1. **Vercel Serverless Function Limitations**
+    - Deploying this application on the Vercel hobby tier is challenging because they impose a soft limit of 10 seconds on the serverless function. This is largely fine because the Gemini model is fast but this can be challenging for heavy images with
+    lots of analysis
+    - Solution: Currently I am setting the serverless function's timeout to hard limit of 60 seconds but that's the maximum allowed timeout. Anything more and either i will have to get the pro tier or deploy it myself on an EC2 instance
 
-1. **Image Analysis Pipeline**
+2. **AI Image Analysis**
+    - The Gemini model is not perfect at image analysis. It can miss things that are hidden or obscured
+    - Solution: Not letting perfect be the enemy of good. Any application that can immediatley benefit when the LLM gets better is
+    in a good spot as the "upgrade" will be free. We can instruct users to upload clear photos and preprocess them
+
+3. **Image Analysis Pipeline**
    - **Current Implementation**:
-     - Direct file to base64 conversion
+     - Direct file to base64 conversion. This works until a certain point
      - Structured response parsing with Zod
      - Type-safe analysis results
    - **Future Improvements**:
-     - Image preprocessing
-     - Response caching
-     - Batch analysis support
+     - Image preprocessing to validate image is proper size, format and meets safety requirements
+     - Response caching for repeated requests
+     - Batch analysis support for multiple fridges/pantries
+     - Backend integration with Supabase for persisting the images so we can use them for training set or debugging user issues
 
-2. **UI Components**
-   - **Current Features**:
-     - Interactive food item cards with expandable details
-     - Real-time quantity updates
-     - Nutritional information visualization. Con is: this is sourced from the LLM response and is not 100% accurate.
-     - Total calorie and value calculations. Con is: this is sourced from the LLM response and is not 100% accurate.
-   - **Implementation**:
-     ```typescript
-     interface FoodItem {
-       name: string;
-       quantity: number;
-       nutrition: Nutrition;
-       estimatedPrice: number;
-       category: "produce" | "dairy" | "meat" | "seafood" | "other";
-     }
-     ```
-
-3. **State Management**
-   - **Current Implementation**: 
-     - React useState for UI state
-     - Callback-based updates
-     - Memoized components for performance
-   - **Features**:
-     - Quantity editing
-     - Expandable item details
-     - Loading states
-     - Error handling
-
-4. **User Experience**
-   - Drag and drop file upload
-   - Image preview
-   - Progressive loading states
-   - Responsive design
-   - Test image option for quick demo
 
 ### Performance Features
 
@@ -165,7 +141,7 @@ If you encounter "Failed to analyze image", here are the potential causes and so
 
 1. **API Key Issues**
    - Ensure your `GOOGLE_GEMINI_API_KEY` is correctly set in `.env.local` if developing locally
-   - Verify the API key has access to Gemini 1.5 Pro
+   - Verify the API key has access to Gemini 2.0 flash lite model
    - Check API key usage quotas in Google AI Studio
 
 2. **Processing Timeout**
