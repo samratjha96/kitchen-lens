@@ -92,6 +92,7 @@ Current:
 ## 🗺 Roadmap
 
 - [ ] Add bounding box canvas to show the detected food items
+- [ ] Better classification for "other" items that could not be identified
 - [ ] Integrate with APIs to get accurate price and nutrition information
 - [ ] AI-powered recipe generation based on available ingredients
 - [ ] Smart expiration date tracking
