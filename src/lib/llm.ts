@@ -1,4 +1,4 @@
-import type { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { toGeminiSchema } from "gemini-zod";
 import { env } from "@/env";
 import type { z } from "zod";
