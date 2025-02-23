@@ -22,12 +22,106 @@ You can try it out [here](https://kitchen-lens.vercel.app/).
 - **UI Layer:** 
   - Tailwind CSS for styling
   - Shadcn UI components
-  - Lucide icons
+  - Lucide icons for consistent iconography
 - **AI Integration:**
-  - Google Cloud Vision API
-  - Gemini Pro for intelligent analysis
-- **Type Safety:** TypeScript
-- **Performance:** Server components & client boundaries
+  - Gemini 1.5-pro-flash for image analysis
+  - Modular LLM architecture supporting multiple providers
+- **Type Safety:** TypeScript with Zod schema validation
+- **State Management:** React hooks with local state
+
+## 🏗 Architecture & Implementation
+
+### Tech Stack Rationale
+
+I put a heavy focus on good end user experience with smooth onboarding. My main goal was to make this extremely simple to get started 
+with which leads to decisions on what model I used and how the UI is setup
+
+I always hate having to sign up for something just to try a demo. That's why I made this demo extremely simple to get started with 
+including a test image that you can use to try it out without uploading anything.
+
+#### AI Implementation
+- **Google Gemini Model (1.5 pro falsh)**: Selected for its:
+  - Multimodal capabilities (image + text understanding)
+  - Generous free tier
+  - Structured output capabilities
+  - Extremely fast inference times
+
+#### Core Architecture
+```typescript
+// Modular LLM architecture supporting multiple providers
+class LLM<T extends z.ZodSchema> {
+  private model: ModelInterface<z.infer<T>>;
+
+  constructor(config: LLMConfig<T>) {
+    // Supports Gemini, with architecture ready for OpenAI and Anthropic
+  }
+}
+```
+
+### Technical Challenges & Solutions
+
+1. **Image Analysis Pipeline**
+   - **Current Implementation**:
+     - Direct file to base64 conversion
+     - Structured response parsing with Zod
+     - Type-safe analysis results
+   - **Future Improvements**:
+     - Image preprocessing
+     - Response caching
+     - Batch analysis support
+
+2. **UI Components**
+   - **Current Features**:
+     - Interactive food item cards with expandable details
+     - Real-time quantity updates
+     - Nutritional information visualization. Con is: this is sourced from the LLM response and is not 100% accurate.
+     - Total calorie and value calculations. Con is: this is sourced from the LLM response and is not 100% accurate.
+   - **Implementation**:
+     ```typescript
+     interface FoodItem {
+       name: string;
+       quantity: number;
+       nutrition: Nutrition;
+       estimatedPrice: number;
+       category: "produce" | "dairy" | "meat" | "seafood" | "other";
+     }
+     ```
+
+3. **State Management**
+   - **Current Implementation**: 
+     - React useState for UI state
+     - Callback-based updates
+     - Memoized components for performance
+   - **Features**:
+     - Quantity editing
+     - Expandable item details
+     - Loading states
+     - Error handling
+
+4. **User Experience**
+   - Drag and drop file upload
+   - Image preview
+   - Progressive loading states
+   - Responsive design
+   - Test image option for quick demo
+
+### Performance Features
+
+Current:
+- Memoized components to prevent unnecessary rerenders
+- Next.js Image component optimization
+- Lazy loading of analysis results
+- Type-safe API responses
+
+## 🗺 Roadmap
+
+- [ ] Add bounding box canvas to show the detected food items
+- [ ] AI-powered recipe generation based on available ingredients
+- [ ] Smart expiration date tracking
+- [ ] Multi-image analysis support
+- [ ] Meal planning assistant
+- [ ] Social sharing features
+- [ ] Dietary restrictions and allergen alerts
 
 ## 💻 Development
 
@@ -35,8 +129,7 @@ You can try it out [here](https://kitchen-lens.vercel.app/).
 
 - Node.js 18+
 - npm/pnpm/yarn
-- Google Cloud Vision API key
-- Gemini Pro API key
+- Google Gemini API key
 
 ### Local Setup
 
@@ -54,8 +147,7 @@ npm install
 3. Configure environment variables:
 Create a `.env.local` file:
 ```env
-GOOGLE_CLOUD_VISION_API_KEY=your_key_here
-GEMINI_API_KEY=your_key_here
+GOOGLE_GEMINI_API_KEY=your_key_here
 ```
 
 4. Start the development server:
@@ -64,17 +156,6 @@ npm run dev
 ```
 
 Visit `http://localhost:3000` to see the app in action.
-
-## 🗺 Roadmap
-
-- [ ] AI-powered recipe generation based on available ingredients
-- [ ] Smart expiration date tracking
-- [ ] Automated shopping list creation
-- [ ] Multi-image analysis support
-- [ ] Nutritional insights dashboard
-- [ ] Meal planning assistant
-- [ ] Social sharing features
-- [ ] Dietary restrictions and allergen alerts
 
 ## 🤝 Contributing
 
@@ -85,11 +166,3 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-Built with 💻 and ❤️ by the Kitchen Lens team
