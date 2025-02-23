@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { test } from "@/services/geminiService";
 import type { FridgeAnalysis } from "@/types/fridge";
 import { DropZone } from "./DropZone";
-import { ImagePreview } from "./ImagePreview";
 
 interface ImageUploaderProps {
   onAnalysisComplete: (analysis: FridgeAnalysis) => void;
@@ -53,7 +52,6 @@ export function ImageUploader({
     try {
       setLoading(true);
       const analysis = await test();
-      console.log(analysis);
 
       const transformedAnalysis: FridgeAnalysis = {
         items: analysis.items.map((item) => ({
@@ -108,15 +106,29 @@ export function ImageUploader({
         />
 
         {preview ? (
-          <ImagePreview
-            preview={preview}
-            onRemove={removeImage}
-            onChangeImage={() =>
-              document.getElementById("image-upload")?.click()
-            }
-          />
+          <div className="w-full space-y-4">
+            <div className="relative overflow-hidden rounded-lg">
+              <img
+                src={preview}
+                alt="Upload preview"
+                className="w-full object-cover"
+              />
+            </div>
+            <div className="flex justify-end gap-2 px-4">
+              <Button variant="outline" size="sm" onClick={removeImage}>
+                Remove
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => document.getElementById("image-upload")?.click()}
+              >
+                Change Image
+              </Button>
+            </div>
+          </div>
         ) : (
-          <DropZone onDrop={handleFileSelect} dragActive={dragActive} />
+          <DropZone dragActive={dragActive} onDrop={handleFileSelect} />
         )}
       </div>
 

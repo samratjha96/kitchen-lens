@@ -10,9 +10,9 @@ export function DropZone({ onDrop, dragActive }: DropZoneProps) {
     <label
       htmlFor="image-upload"
       onDrop={(e) => {
-        e.preventDefault()
-        const file = e?.dataTransfer?.files?.[0]
-        if (file) onDrop(file)
+        e.preventDefault();
+        const file = e?.dataTransfer?.files?.[0];
+        if (file) onDrop(file);
       }}
       className={`flex cursor-pointer flex-col items-center gap-4 p-8 text-center ${
         dragActive ? "bg-blue-500/5" : ""
