@@ -6,7 +6,7 @@ import { Upload, X, Loader2, ImagePlus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { analyzeFridgeImage } from "@/services/fridgeAnalysis";
+import { analyzeFridge } from "@/services/fridgeAnalysis";
 import type { FridgeAnalysis } from "@/types/fridge";
 
 interface ImageUploaderProps {
@@ -33,13 +33,10 @@ export function ImageUploader({
     }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    const file = e?.dataTransfer?.files?.[0];
+    if (file) {
       setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -47,7 +44,7 @@ export function ImageUploader({
       };
       reader.readAsDataURL(file);
     }
-  }, []);
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -74,10 +71,10 @@ export function ImageUploader({
 
     try {
       setLoading(true);
-      const analysis = await analyzeFridgeImage(image);
+      const analysis = await analyzeFridge(image);
       onAnalysisComplete(analysis);
     } catch (error) {
-      console.error("Error analyzing image:", error);
+      console.error("Error analyzing image:", error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setLoading(false);
     }

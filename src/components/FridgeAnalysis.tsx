@@ -1,4 +1,4 @@
-import { FridgeAnalysis as FridgeAnalysisType } from "@/types/fridge";
+import type { FridgeAnalysis as FridgeAnalysisType } from "@/types/fridge";
 import { AnalysisCard } from "@/components/AnalysisCard";
 
 type FridgeAnalysisProps = {
@@ -21,13 +21,13 @@ export function FridgeAnalysis({ analysis }: FridgeAnalysisProps) {
     name: item.name,
     quantity: item.quantity,
     nutrition: {
-      calories: item.calories || 0,
-      protein: item.protein || 0,
-      carbs: item.carbs || 0,
-      fat: item.fat || 0,
+      calories: item.calories ?? 0,
+      protein: item.protein ?? 0,
+      carbs: item.carbs ?? 0,
+      fat: item.fat ?? 0,
     },
     estimatedPrice: item.estimatedValue,
-    category: item.category || "other",
+    category: item.category ?? "other",
   }));
 
   return <AnalysisCard items={items} />;

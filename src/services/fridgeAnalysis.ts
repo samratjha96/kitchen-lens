@@ -1,6 +1,6 @@
-import { FridgeAnalysis } from "@/types/fridge"
+import type { FridgeAnalysis } from "@/types/fridge";
 
-export async function analyzeFridgeImage(image: File): Promise<FridgeAnalysis> {
+export const analyzeFridge = async (_image: File): Promise<FridgeAnalysis> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500))
   
