@@ -14,7 +14,7 @@ export class LLM<T extends z.ZodSchema> {
   constructor(config: Partial<LLMConfig<T>> & { responseSchema: T }) {
     const fullConfig: LLMConfig<T> = {
       provider: "gemini",
-      model: "gemini-2.0-flash-lite-preview-02-05",
+      model: "gemini-2.0-flash-lite",
       systemInstruction: "",
       ...config,
     };

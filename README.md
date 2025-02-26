@@ -24,7 +24,7 @@ You can try it out [here](https://kitchen-lens.vercel.app/).
   - Shadcn UI components
   - Lucide icons for consistent iconography
 - **AI Integration:**
-  - Gemini 2.0-flash for image analysis (lite version is being used and is currently in preview/free)
+  - Gemini 2.0-flash for image analysis
   - Modular LLM architecture supporting multiple providers
 - **Type Safety:** TypeScript with Zod schema validation
 - **State Management:** React hooks with local state
@@ -40,7 +40,7 @@ I always hate having to sign up for something just to try a demo. That's why I m
 including a test image that you can use to try it out without uploading anything.
 
 #### AI Implementation
-- **Google Gemini Model (2.0 flash lite)**: Selected for its:
+- **Google Gemini Model (2.0 flash)**: Selected for its:
   - Multimodal capabilities (image + text understanding)
   - Generous free tier
   - Structured output capabilities
@@ -142,7 +142,7 @@ If you encounter "Failed to analyze image", here are the potential causes and so
 
 1. **API Key Issues**
    - Ensure your `GOOGLE_GEMINI_API_KEY` is correctly set in `.env.local` if developing locally
-   - Verify the API key has access to Gemini 2.0 flash lite model
+   - Verify the API key has access to Gemini 2.0 flash model
    - Check API key usage quotas in Google AI Studio
 
 2. **Processing Timeout**

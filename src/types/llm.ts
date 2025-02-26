@@ -3,7 +3,7 @@ import type { z } from "zod";
 export type ModelProvider = "gemini" | "openai" | "anthropic";
 export type ModelName =
   | "gemini-1.5-pro-latest"
-  | "gemini-2.0-flash-lite-preview-02-05"
+  | "gemini-2.0-flash-lite"
   | "gpt-4"
   | "claude-3";
 
